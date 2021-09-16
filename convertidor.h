@@ -7,34 +7,34 @@
 #ifndef CONVERTIDOR_H_INCLUDED
 #define CONVERTIDOR_H_INCLUDED
 
-/**
-    De entrada se permite cualquier digito, pero al retornar en la parte entera solo tendrá
-
-**/
-#define PARTE_ENTERA        10 // Máximos digitos para la parte entera.
-#define PARTE_FRACCIONARIA  5 // Máximos digitos de presición para la parte fraccionaria.
+#define PARTE_ENTERA        40 // Máximos digitos para la parte entera. (El máximo valor que puede tomar una parte entera es 40 tal que es el numero de digitos de pasar de base 16 el numero FF..F (10 F's) a base 2.
+#define PARTE_FRACCIONARIA  14 // Máximos digitos que puede tener la parte fraccionaria. (es decir, 0,..14digitos..)
+#define PRESICION           5 // Digitos de presicion para la parte fraccionaria
 
 /** --- Funciones privadas --- **/
 /**
     Procesa el caracter de la posicion actual
     y devuelve su valor tipo entero equivalente.
 **/
-static int pasajeInt(char *posicionActual){
-    int actual;
+static int* pasajeInt(char *posicionActual){
+    int *actual;
+
+    /** Asignación de memoria **/
+    actual = (int*) malloc(sizeof(int));
     switch(*posicionActual){
-                case 'A' : actual = 10; break;
-                case 'a' : actual = 10; break;
-                case 'B' : actual = 11; break;
-                case 'b' : actual = 11; break;
-                case 'C' : actual = 12; break;
-                case 'c' : actual = 12; break;
-                case 'D' : actual = 13; break;
-                case 'd' : actual = 13; break;
-                case 'E' : actual = 14; break;
-                case 'e' : actual = 14; break;
-                case 'F' : actual = 15; break;
-                case 'f' : actual = 15; break;
-                default: actual = *posicionActual - '0'; break;
+                case 'A' : *actual = 10; break;
+                case 'a' : *actual = 10; break;
+                case 'B' : *actual = 11; break;
+                case 'b' : *actual = 11; break;
+                case 'C' : *actual = 12; break;
+                case 'c' : *actual = 12; break;
+                case 'D' : *actual = 13; break;
+                case 'd' : *actual = 13; break;
+                case 'E' : *actual = 14; break;
+                case 'e' : *actual = 14; break;
+                case 'F' : *actual = 15; break;
+                case 'f' : *actual = 15; break;
+                default: *actual = *posicionActual - '0'; break;
             }
     return actual;
 }
@@ -44,52 +44,66 @@ static int pasajeInt(char *posicionActual){
     de un numero con su base origen, y retorna
     su valor en base decimal.
 **/
-static void origenADecimal(char* p_parteEntera, int* baseOrigen){
-    int actual, posicion, potencia;
-    long double suma;
-    long int numeroFinal;
-    numeroFinal = 0; actual = 0; suma = 0;
-    posicion = 0; // Posición del digito.
-    potencia = strlen(p_parteEntera) - 1; // Potencia que se tiene que elevar el digito.
+static void origenADecimal(char* parteEntera, int* baseOrigen){
+    int *posicion, *potencia;
+    long double *suma;
+    long int *numeroFinal;
 
-    while(posicion < strlen(p_parteEntera)){
-        actual = pasajeInt((p_parteEntera + posicion));
-        suma += pow(*baseOrigen, potencia) * actual; // nocomputa bien la potencia. por qué?
-        posicion++;
-        potencia--;
+    /** Asignación de memoria **/
+    posicion = (int*) malloc(sizeof(int));
+    potencia = (int*) malloc(sizeof(int));
+    suma = (long double*) malloc(sizeof(double));
+    numeroFinal = (long int*) malloc(sizeof(int));
+
+    *numeroFinal = 0; *suma = 0;
+    *posicion = 0; // Posición del digito.
+    *potencia = strlen(parteEntera) - 1; // Potencia que se tiene que elevar el digito.
+
+    while(*posicion < strlen(parteEntera)){
+        int *actual;
+        actual = pasajeInt((parteEntera + *posicion));
+        (*suma) += pow(*baseOrigen, *potencia) * *actual; // nocomputa bien la potencia. por qué?
+        (*posicion)++;
+        (*potencia)--;
+        /** Liberación de memoria **/
+        free(actual);
     }
 
-    numeroFinal = (int) suma;
+    *numeroFinal = (int) *suma;
     /* No se puede expresar el número en la base solicitada.
     if(numeroFinal >= pow(*baseDestino, PARTE_ENTERA))
         exit(EXIT_FAILURE);*/
-    sprintf(p_parteEntera, "%d", numeroFinal);
+    sprintf(parteEntera, "%d", *numeroFinal);
+    /** Liberación de memoria **/
+    free(posicion); free(potencia); free(numeroFinal); free(suma);
 }
 
 /**
     Procesa el entero actual y
     retorna su caracter equivalente
 **/
-static char* pasajeChar(int actual){
+static char* pasajeChar(int* actual){
     char *actualDestino;
+
+    /** Asignación de memoria **/
     actualDestino = (char*) malloc(sizeof(char));
-    switch(actual){
-            case 0 : *actualDestino = '0'; break;
-            case 1 : *actualDestino = '1'; break;
-            case 2 : *actualDestino = '2'; break;
-            case 3 : *actualDestino = '3'; break;
-            case 4 : *actualDestino = '4'; break;
-            case 5 : *actualDestino = '5'; break;
-            case 6 : *actualDestino = '6'; break;
-            case 7 : *actualDestino = '7'; break;
-            case 8 : *actualDestino = '8'; break;
-            case 9 : *actualDestino = '9'; break;
-            case 10 : *actualDestino = 'A'; break;
-            case 11 : *actualDestino = 'B'; break;
-            case 12 : *actualDestino = 'C'; break;
-            case 13 : *actualDestino = 'D'; break;
-            case 14 : *actualDestino = 'E'; break;
-            case 15 : *actualDestino = 'F'; break;
+    switch(*actual){
+            case 0: strcpy(actualDestino, "0"); break;
+            case 1: strcpy(actualDestino, "1"); break;
+            case 2: strcpy(actualDestino, "2"); break;
+            case 3: strcpy(actualDestino, "3"); break;
+            case 4: strcpy(actualDestino, "4"); break;
+            case 5: strcpy(actualDestino, "5"); break;
+            case 6: strcpy(actualDestino, "6"); break;
+            case 7: strcpy(actualDestino, "7"); break;
+            case 8: strcpy(actualDestino, "8"); break;
+            case 9: strcpy(actualDestino, "9"); break;
+            case 10: strcpy(actualDestino, "A"); break;
+            case 11: strcpy(actualDestino, "B"); break;
+            case 12: strcpy(actualDestino, "C"); break;
+            case 13: strcpy(actualDestino, "D"); break;
+            case 14: strcpy(actualDestino, "E"); break;
+            case 15: strcpy(actualDestino, "F"); break;
     }
     return actualDestino;
 }
@@ -99,41 +113,49 @@ static char* pasajeChar(int actual){
     con su base destino, un contador, y el numero en su base
     destino correspondiente.
 **/
-static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* p_enBaseDestino, int* contador){
-    int actual;
-    actual = 0;
+static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* enBaseDestino){
+    int *actual;
+
+    /** Asignación de memoria **/
+    actual = (int*) malloc(sizeof(int));
+
+    *actual = 0;
 
     if(*parteEntera != 0){
-        actual = *parteEntera % *baseDestino;
-        *parteEntera /= *baseDestino;
+        (*actual) = *parteEntera % *baseDestino;
+        (*parteEntera) /= *baseDestino;
 
         if(*parteEntera != 0)
-            decimalADestinoAux(parteEntera, baseDestino, p_enBaseDestino, contador);
+            decimalADestinoAux(parteEntera, baseDestino, enBaseDestino);
     }
 
-    char *caracter;
-    caracter = pasajeChar(actual);
-    *(p_enBaseDestino + (*contador)) = *caracter;
-    free(caracter);
-    *(contador) += 1;
-
+    char *pasaje;
+    pasaje = pasajeChar(actual);
+    strcat(enBaseDestino, pasaje);
+    /** Liberación de memoria **/
+    free(pasaje); free(actual);
 }
 /**
     Recibe como parametro la parte entera
     de un numero con su base destino, y retorna
     su valor en la base destino.
 **/
- static void decimalADestino(char* p_parteEntera, int* baseDestino){
-    int contador;
-    contador = 0;
+ static void decimalADestino(char* parteEntera, int* baseDestino){
+    int *numero;
 
-    int parteEntera;
-    parteEntera = atoi(p_parteEntera); // Como siempre es de decimal a destino, utilizo la librería.
+    /** Asignación de memoria **/
+    numero = (int*) malloc(sizeof(int));
+
+    *numero = atoi(parteEntera); // Como siempre es de decimal a destino, utilizo la librería.
 
     /* No se puede expresar el número en la base solicitada.
     if(parteEntera >= pow(*baseDestino, PARTE_ENTERA))
         exit(EXIT_FAILURE);*/
-    decimalADestinoAux(&parteEntera, baseDestino, p_parteEntera, &contador);
+
+    strcpy(parteEntera, "");
+    decimalADestinoAux(numero, baseDestino, parteEntera);
+    /** Liberación de memoria **/
+    free(numero);
 }
 
 /**
@@ -142,131 +164,172 @@ static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* p_enBas
     Y retorna su valor en la base destino.
 **/
                                 //se asume que la parte fraccionaria esta pasada por parametro como 0.<numero fraccionario> Al ser en base 10, se puede hacer esto
-/*static char *decimalADestinoFrac(float* parteFrac, int* baseDestino){
-    char* enBaseDestino;
-    int* contador, *parteEntera, *termino;
-    float* parteDecimal;
+static void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino){
+    char *enBaseDestino;
+    float *parteFrac;
+    int *contador, *parteEntera;
 
-    *termino = 0;
+    /** Asignación de memoria **/
+    enBaseDestino = (char*) malloc(PARTE_FRACCIONARIA * sizeof(char));
+    parteFrac = (float*) malloc(sizeof(float));
+    contador = (int*) malloc(sizeof(int));
+    parteEntera = (int*) malloc(sizeof(int));
+
+
+    strcpy(enBaseDestino, "");
+    *parteFrac = (atoi(parteFraccionaria)/pow(10, strlen(parteFraccionaria)));
+    *parteEntera = 0;
     *contador = 0;
 
-    while(*contador < PARTE_FRACCIONARIA && *parteFrac){
+    while(*contador < PRESICION){
+        (*parteFrac) *= (*baseDestino);
+        (*parteEntera) = *parteFrac;
+        (*parteFrac) -= *parteEntera;
 
-        *parteFrac *= *baseDestino;
-        *parteEntera = *parteFrac;
-        *parteFrac -= *parteEntera;
-        *enBaseDestino = strcat(enBaseDestino, *pasajeChar(parteEntera));
-        *contador++;
-
+        char *pasaje;
+        pasaje = pasajeChar(parteEntera);
+        strcat(enBaseDestino, pasaje);
+        (*contador)++;
+        free(pasaje);
     }
-
-    return enBaseDestino;
-
+    strcpy(parteFraccionaria, enBaseDestino);
+    /** Liberación de memoria **/
+    free(enBaseDestino); free(contador); free(parteEntera); free(parteFrac);
 }
                     //se asume que la parte fraccionaria esta pasada por parametro como <numero fraccionario>
-static int *origenADecimalFrac(char* parteFrac, int* baseDestino){
+static void origenADecimalFrac(char* parteFrac, int* baseDestino){
 
     int *posicion;
     float *enBaseDecimal;
+
+    /** Asignación de memoria **/
+    posicion = (int*) malloc(sizeof(int));
+    enBaseDecimal = (float*) malloc(sizeof(float));
 
     *posicion = strlen(parteFrac) - 1;
     *enBaseDecimal = 0;
 
     while(*posicion >= 0){
-        *enBaseDecimal += pasajeInt(parteFrac + *posicion);
-        *enBaseDecimal /= *baseDestino;
+        int *pasaje;
+        pasaje = pasajeInt(parteFrac + *posicion);
+        (*enBaseDecimal) += *pasaje;
+        (*enBaseDecimal) /= *baseDestino;
+        free(pasaje);
     }
 
-    return enBaseDecimal;
+    sprintf(parteFrac, "%d", *enBaseDecimal);
+    /** Liberación de memoria **/
+    free(posicion); free(enBaseDecimal);
+
 }
 
-*/
 
 /** Separa la parte entera y la parte fraccionaria del número **/
-static void separar(char *p_numero, char *p_parteEntera, char *p_parteFraccionaria){
+static void separar(char *numero, char *parteEntera, char *parteFraccionaria){
     // OBS: No veo si tiene 2 comas ó si son todos numeros de la misma base porque eso ya se validó en el "validador.h"
-    int size, i, parte;
-    size = strlen(p_numero);
-    parte = 0; // 0 indica que está leyendo en la parte entera, 1 en la parte fraccionaria
-    int contador;
-    contador = 0; // Posición de la parte entera o la parte fraccionaria.
-    for(i = 0; i < size; i++){
-        if(parte == 0) {
-            if(*(p_numero+i) == ',') {
-                    parte = 1;
-                    *(p_parteEntera + (contador+1) ) = '\0';
-                    contador = 0;
-            } else {
-                    *(p_parteEntera+contador) = *(p_numero+i);
-                    contador++;
-            }
-        } else {
-            *(p_parteFraccionaria+contador) = *(p_numero+i);
-            contador++;
-            if(i == (size-1))
-                *(p_parteFraccionaria + (contador+1) ) = '\0';
-        }
+    int *size, *i, *parte;
+
+    /** Asignación de memoria **/
+    size = (int*) malloc(sizeof(int));
+    i = (int*) malloc(sizeof(int));
+    parte = (int*) malloc(sizeof(int));
+
+    *size = strlen(numero);
+    *parte = 0; // 0 indica que está leyendo en la parte entera, 1 en la parte fraccionaria
+
+    for(*i = 0; *i < *size; (*i)++){
+            if(*parte == 0){
+                if(*(numero+*i) == SEPARADOR) *parte=1;
+                else strcat(parteEntera, (numero+*i));
+            } else strcat(parteFraccionaria, (numero+*i));
     }
-    if(parte == 0)
-        *(p_parteEntera + (contador+1) ) = '\0';
+    /** Liberación de memoria **/
+    free(i); free(size); free(parte);
 }
 
 /** --- Funciones públicas --- **/
 
-void convertir(char *p_numero, int *baseOrigen, int* baseDestino, int *mostrarPasos){
-    char parteEntera[PARTE_ENTERA];
-    char parteFraccionaria[PARTE_FRACCIONARIA];
+int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPasos){
+    int *retorno;
+    char *parteEntera;
+    char *parteFraccionaria;
+    int *validador;
+
+    /** Asignación de memoria **/
+    retorno = (int*) malloc(sizeof(int));
+    parteEntera = (char*) malloc(PARTE_ENTERA * sizeof(char));
+    parteFraccionaria = (char*) malloc(PARTE_FRACCIONARIA * sizeof(char));
+
+    *retorno = 0;
     strcpy(parteEntera, "");
     strcpy(parteFraccionaria, "");
+    validador = validar(numero, baseOrigen);
 
-    char *p_parteEntera;
-    char *p_parteFraccionaria;
-    p_parteEntera = parteEntera;
-    p_parteFraccionaria = parteFraccionaria;
+    if( *validador == 0) { // La función "validar" retorna 0 cuando el número sea válido y sea de la base indicada.
 
-    if( validar(p_numero, baseOrigen) == 0) { // ¿El número es válido y pertenece a la base? 0=sí
-        /** El mayor número representable de una base r contando con 10 dígitos en la parte entera es N = r^10. (En sistema decimal) **/
-        /** Base 10 a base r -> se verifica el numero ingresado **/
-        /** Base r a base 10 -> se verifica una vez se convirtió el entero **/
-        /** Base r a base d -> se verifica una vez se convirtió el entero de base r a base 10 (cuando se usa la base 10 de auxiliar) <- COMPLETAR ESTE **/
+        /**
+            Configurar estas excepciones:
+            * Máximo representable con un long 10 bits.
+                Máximo base binaria: 1023
+                Maximo base r: N = r^10.
 
+            Agregar parte fraccionaria entre base r a 10. testear.
+
+            Agregar paso por paso a las conversiones. agregar prints segun *mostrarpasos.
+
+            Agregar base r y base d fraccionarias. completo.
+        **/
         /** Si la bases son iguales, es el mismo número **/
         if(*baseOrigen == *baseDestino){
             if(*mostrarPasos == 1)
                 printf("[convertir] Las bases son iguales, por ende el número no se convierte.");
-            // agregar excepción si supera los limites permitidos.
         }
 
         /** Hace una conversión de base 10 a base r **/
         else if(*baseOrigen == 10 && *baseDestino != 10){
-            separar(p_numero, p_parteEntera, p_parteFraccionaria);
-            decimalADestino(p_parteEntera, baseDestino);
-            printf("Parte entera convertida (decimal a destino): %s\n", parteEntera);
-            // Falta hacer la parte fraccionaria y unir en el numero original.
-                if(strlen(parteFraccionaria) > 0){
-                        // Tiene parte fraccionaria, hago la conversión.
-                }
+            separar(numero, parteEntera, parteFraccionaria);
+            decimalADestino(parteEntera, baseDestino);
+            strcpy(numero, parteEntera);
+            if(strlen(parteFraccionaria) > 0){
+                    decimalADestinoFrac(parteFraccionaria, baseDestino);
+                    strcat(numero, ",");
+                    strcat(numero, parteFraccionaria);
+            }
         }
 
         /** Hace una conversión de base r a base 10 **/
         else if(*baseOrigen != 10 && *baseDestino == 10){
-            separar(p_numero, p_parteEntera, p_parteFraccionaria);
-            origenADecimal(p_parteEntera, baseOrigen);
-           printf("Parte entera convertida (origen a destino): %s\n", parteEntera);
-           // Falta hacer la parte fraccionaria y unir en el numero original.
-           if(strlen(parteFraccionaria) > 0){
-                        // Tiene parte fraccionaria, hago la conversión.
-                }
+            separar(numero, parteEntera, parteFraccionaria);
+            origenADecimal(parteEntera, baseOrigen);
+            strcpy(numero, parteEntera);
+            if(strlen(parteFraccionaria) > 0){
+                    /** testear **/
+                    origenADecimalFrac(parteFraccionaria, baseDestino);
+                    strcat(numero, ",");
+                    strcat(numero, parteFraccionaria);
+            }
         }
 
         /** Base origen r y base destino d diferentes a 10. Entonces, se utiliza como auxiliar la base 10 para hacer la conversión. **/
         else {
-            /** Conversión de base r a base 10. **/
+            /** Separación de la parte fraccionaria y la parte entera **/
+            separar(numero, parteEntera, parteFraccionaria);
 
-            /** Conversión de base 10 a base d **/
+            /** Conversión de la parte entera **/
+                /** Conversión de base r a base 10. **/
+                origenADecimal(parteEntera, baseOrigen);
+                /** Conversión de base 10 a base d **/
+                decimalADestino(parteEntera, baseDestino);
+                strcpy(numero, parteEntera);
 
+            /** Una vez que ya se convirtió, ahora se convierte la parte fraccionaria si es que tiene **/
         }
-    } else exit(EXIT_FAILURE);
+    } else *retorno = 2;
+
+    free(parteEntera);
+    free(parteFraccionaria);
+    free(validador);
+    return retorno;
 }
 
 #endif // CONVERTIDOR_H_INCLUDED
