@@ -15,7 +15,7 @@
 
 #define PARTE_ENTERA        40
 #define PARTE_FRACCIONARIA  14
-#define PRESICION           5
+#define PRECISION           5
 
 /** --- Funciones privadas --- **/
 /**
@@ -181,7 +181,7 @@ static void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino){
     *parteEntera = 0;
     *contador = 0;
 
-    while(*contador < PRESICION){
+    while(*contador < PRECISION){
         (*parteFrac) *= (*baseDestino);
         (*parteEntera) = *parteFrac;
         (*parteFrac) -= *parteEntera;
