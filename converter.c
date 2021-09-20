@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include "convertidor.h"
 
+/** Macro para el argumento -h **/
+#define mostrarUsoCorrecto   printf("Usa: %s -n <numero> [-s <base_origen>] [-d <base_destino>] [-v] [-h]\n", *argv)
+
 /** Lee el argumento A **/
 #define LEER(A) if( strcmp(*(argv+*i), A) ==0)
 
@@ -16,6 +19,7 @@ int *mostrarPasos;
 int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, int *baseDestino);
 
 /** -- Definición de funciones -- **/
+
 /**
     Función: guardarParametros
     Descripción: Guarda los parametros ingresados por la consola en las variables a utilizar.
@@ -36,7 +40,7 @@ int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, i
     *retorno = 0;
     /** Valida que los argumentos sean correctos --> Rango de los argumentos [3, 9] **/
     if(*argc < 3 || *argc > 9) {
-        printf("Usa: %s -n <numero> [-s <base_origen>] [-d <base_destino>] [-v] [-h]\n", *argv);
+        mostrarUsoCorrecto;
         *retorno = 1;
     }
     else {
@@ -51,11 +55,11 @@ int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, i
         if( strcmp(*(argv+1), "-n") !=0)
             *retorno = 2;
 
-        while(*i < (*argc) && *retorno == 0){
+        while(*i < (*argc) && *retorno <= 1){
 
             /** Lee el número **/
             LEER("-n"){
-                    *i += 1; // Itera nuevamente para leer el numero ya que seguido al -n siempre debe estar el número. De lo contrario el formato ingresado es inválido.
+                    (*i)++; // Itera nuevamente para leer el numero ya que seguido al -n siempre debe estar el número. De lo contrario el formato ingresado es inválido.
                     if(*(argv+*i) != NULL) {
                         if(strlen(*(argv+*i)) > MAXNUM)
                             *retorno = 3;
@@ -65,7 +69,7 @@ int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, i
 
             /** Lee la base origen **/
            } else LEER("-s"){
-                    *i += 1; // Itera nuevamente para leer el numero ya que seguido al -s siempre debe estar la base origen. De lo contrario el formato ingresado es inválido.
+                    (*i)++; // Itera nuevamente para leer el numero ya que seguido al -s siempre debe estar la base origen. De lo contrario el formato ingresado es inválido.
                     if(*(argv+*i) != NULL) {
                         if( atoi(*(argv+*i)) >= 2 && atoi(*(argv+*i)) <= 16) {
                             *baseOrigen = atoi(*(argv+*i));
@@ -75,7 +79,7 @@ int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, i
 
             /** Lee la base destino **/
            } else LEER("-d"){
-                    *i += 1; // Itera nuevamente para leer el numero ya que seguido al -d siempre debe estar la base destino. De lo contrario el formato ingresado es inválido.
+                    (*i)++; // Itera nuevamente para leer el numero ya que seguido al -d siempre debe estar la base destino. De lo contrario el formato ingresado es inválido.
                     if(*(argv+*i) != NULL) {
                         if( atoi(*(argv+*i)) >= 2 && atoi(*(argv+*i)) <= 16) {
                             *baseDestino = atoi(*(argv+*i));
@@ -86,17 +90,16 @@ int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, i
             /** Activa la ayuda del programa **/
            } else LEER("-h"){
                     *retorno = 1;
-                    printf("%s: Convierte un numero de una base r a una base d.\n");
+                    printf("\n%s: Convierte un numero de una base r a una base d.\n", *argv);
                     printf("Si no se ingresa ninguna base se asume que, r=d=10.\n");
                     printf("El comando -v mostrara paso por paso la conversion del numero.\n");
-                    printf("Modo de uso: %s -n <numero> [-s <base_origen>] [-d <base_destino>] [-v] [-h]\n", *argv);
-                    /** Completar algo más? **/
+                    mostrarUsoCorrecto;
 
             /** Muestra por consola los pasos que se van haciendo para convertir al número **/
            } else LEER("-v"){
                     *mostrarPasos = 1;
            } else *retorno = 5; // Ante cualquier otro parametro, indica un error.
-            *i += 1;
+            (*i)++;
         }
         free(i);
     }
@@ -115,26 +118,36 @@ void main(int argc, char *argv[]){
     mostrarPasos = (int*) malloc(sizeof(int));
     numero = (char*) malloc(MAXNUM * sizeof(char));
 
+    strcpy(numero, "");
     *baseOrigen = 10;
     *baseDestino = 10;
     *mostrarPasos = 0;
 
-    /** Obtengo el valor de lo que retorne la funcion guardarParametros. Si *retornado > 0 entonces indica que hay un error. **/
+    /**
+        Guardo los parametros ingresados en la línea de comandos en los punteros.
+
+        Retorna 0:      Cuando los parametros fueron guardados con éxito.
+        Retorna 1:      Cuando los parametros fueron guardados con éxito y el usuario pidió ayuda (parametro -h)
+        Retorna r:      Cuando los parametros no fueron guardados porque ocurrió un error.
+                r>1.
+    **/
     retornado = guardarParametros(&argc, argv, numero, baseOrigen, baseDestino);
 
-    /** Existen dos posibilidades, que el usuario pida ayuda o no. En el caso de pedir ayuda (*retornado==1), el número no se convierte **/
+
     if( *retornado == 0){
             if(*mostrarPasos == 1){ // Carteles a mostrar por consola si el usuario solicitó "-v"
-                printf("[main] Numero a convertir: %s\n", numero);
-                printf("[main] Base origen: %i | Base destino: %i\n", *baseOrigen, *baseDestino);
+                printf("Numero a convertir: %s\n", numero);
+                printf("Base origen: %i | Base destino: %i\n", *baseOrigen, *baseDestino);
             }
             free(retornado);
             retornado = convertir(numero, baseOrigen, baseDestino, mostrarPasos);
             if(*retornado == 0) printf("Numero convertido -> %s (base %i)", numero, *baseDestino);
             else printf("Ocurrio un error y el numero no pudo ser convertido.");
-    } else if(*retornado > 1){ // Si retornado == 1 es porque el usuario pidió ayuda.
-        printf("error: %i", *retornado);
+    } else if(*retornado > 1) {
+        printf("Los parametros ingresados no son validos. Intente nuevamente.\n");
+        mostrarUsoCorrecto;
     }
+
     /** Liberación de memoria **/
     free(baseOrigen); free(baseDestino); free(numero); free(mostrarPasos);
 
@@ -143,8 +156,7 @@ void main(int argc, char *argv[]){
         free(retornado);
         /** El programa finaliza correctamente **/
         exit(EXIT_SUCCESS);
-    }
-    if(*retornado > 1) {
+    } else {
         /** Liberación de memoria **/
         free(retornado);
         /** El programa finaliza con un error **/

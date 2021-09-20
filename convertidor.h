@@ -7,9 +7,15 @@
 #ifndef CONVERTIDOR_H_INCLUDED
 #define CONVERTIDOR_H_INCLUDED
 
-#define PARTE_ENTERA        40 // Máximos digitos para la parte entera. (El máximo valor que puede tomar una parte entera es 40 tal que es el numero de digitos de pasar de base 16 el numero FF..F (10 F's) a base 2.
-#define PARTE_FRACCIONARIA  14 // Máximos digitos que puede tener la parte fraccionaria. (es decir, 0,..14digitos..)
-#define PRESICION           5 // Digitos de presicion para la parte fraccionaria
+#define MAX_PARTEENTERA     10
+#define MAX_PARTEFRACC      5
+
+#define MAX_PARTEENTERA     10
+#define MAX_PARTEFRACC      5
+
+#define PARTE_ENTERA        40
+#define PARTE_FRACCIONARIA  14
+#define PRESICION           5
 
 /** --- Funciones privadas --- **/
 /**
@@ -70,10 +76,8 @@ static void origenADecimal(char* parteEntera, int* baseOrigen){
     }
 
     *numeroFinal = (int) *suma;
-    /* No se puede expresar el número en la base solicitada.
-    if(numeroFinal >= pow(*baseDestino, PARTE_ENTERA))
-        exit(EXIT_FAILURE);*/
     sprintf(parteEntera, "%d", *numeroFinal);
+
     /** Liberación de memoria **/
     free(posicion); free(potencia); free(numeroFinal); free(suma);
 }
@@ -148,10 +152,6 @@ static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* enBaseD
 
     *numero = atoi(parteEntera); // Como siempre es de decimal a destino, utilizo la librería.
 
-    /* No se puede expresar el número en la base solicitada.
-    if(parteEntera >= pow(*baseDestino, PARTE_ENTERA))
-        exit(EXIT_FAILURE);*/
-
     strcpy(parteEntera, "");
     decimalADestinoAux(numero, baseDestino, parteEntera);
     /** Liberación de memoria **/
@@ -192,13 +192,14 @@ static void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino){
         (*contador)++;
         free(pasaje);
     }
+
     strcpy(parteFraccionaria, enBaseDestino);
+
     /** Liberación de memoria **/
     free(enBaseDestino); free(contador); free(parteEntera); free(parteFrac);
 }
                     //se asume que la parte fraccionaria esta pasada por parametro como <numero fraccionario>
-static void origenADecimalFrac(char* parteFrac, int* baseDestino){
-
+static void origenADecimalFrac(char* parteFrac, int* baseOrigen){
     int *posicion;
     float *enBaseDecimal;
 
@@ -211,13 +212,23 @@ static void origenADecimalFrac(char* parteFrac, int* baseDestino){
 
     while(*posicion >= 0){
         int *pasaje;
-        pasaje = pasajeInt(parteFrac + *posicion);
+        pasaje = pasajeInt( (parteFrac+*posicion));
         (*enBaseDecimal) += *pasaje;
-        (*enBaseDecimal) /= *baseDestino;
+        (*enBaseDecimal) = *enBaseDecimal / *baseOrigen;
+        (*posicion)--;
         free(pasaje);
     }
 
-    sprintf(parteFrac, "%d", *enBaseDecimal);
+    sprintf(parteFrac, "%f", *enBaseDecimal);
+
+    /** En este momento, parteFrac contendrá el "0,(parteFraccionaria convertida)" entonces utilizo este algoritmo para sacar el "0," **/
+    char *auxFrac;
+    auxFrac = (char*) malloc(PARTE_FRACCIONARIA * sizeof(char));
+    strcpy(auxFrac, parteFrac);
+    strcpy(parteFrac, "");
+    strcat(parteFrac, auxFrac+2);
+    free(auxFrac);
+
     /** Liberación de memoria **/
     free(posicion); free(enBaseDecimal);
 
@@ -240,9 +251,10 @@ static void separar(char *numero, char *parteEntera, char *parteFraccionaria){
     for(*i = 0; *i < *size; (*i)++){
             if(*parte == 0){
                 if(*(numero+*i) == SEPARADOR) *parte=1;
-                else strcat(parteEntera, (numero+*i));
-            } else strcat(parteFraccionaria, (numero+*i));
+                else strncat(parteEntera, (numero+*i), 1);
+            } else strncat(parteFraccionaria, (numero+*i), 1);
     }
+
     /** Liberación de memoria **/
     free(i); free(size); free(parte);
 }
@@ -263,72 +275,80 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
     *retorno = 0;
     strcpy(parteEntera, "");
     strcpy(parteFraccionaria, "");
+
+    /** Comprueba si la cadena ingresada pertenece a la base. (Retorna 0 si pertenece) **/
     validador = validar(numero, baseOrigen);
 
-    if( *validador == 0) { // La función "validar" retorna 0 cuando el número sea válido y sea de la base indicada.
+    if( *validador == 0) {
 
-        /**
-            Configurar estas excepciones:
-            * Máximo representable con un long 10 bits.
-                Máximo base binaria: 1023
-                Maximo base r: N = r^10.
+        /** Separación de la parte fraccionaria y la parte entera **/
+        separar(numero, parteEntera, parteFraccionaria);
 
-            Agregar parte fraccionaria entre base r a 10. testear.
+        if( strlen(parteEntera) > MAX_PARTEENTERA || strlen(parteFraccionaria) > MAX_PARTEFRACC) {
+            // La parte entera o la parte fraccionaria supera el máximo de digitos permitidos.
+            *retorno = 1;
 
-            Agregar paso por paso a las conversiones. agregar prints segun *mostrarpasos.
+        } else {
 
-            Agregar base r y base d fraccionarias. completo.
-        **/
-        /** Si la bases son iguales, es el mismo número **/
-        if(*baseOrigen == *baseDestino){
-            if(*mostrarPasos == 1)
-                printf("[convertir] Las bases son iguales, por ende el número no se convierte.");
-        }
+            /** -- Inicio convertidores -- **/
 
-        /** Hace una conversión de base 10 a base r **/
-        else if(*baseOrigen == 10 && *baseDestino != 10){
-            separar(numero, parteEntera, parteFraccionaria);
-            decimalADestino(parteEntera, baseDestino);
-            strcpy(numero, parteEntera);
-            if(strlen(parteFraccionaria) > 0){
-                    decimalADestinoFrac(parteFraccionaria, baseDestino);
-                    strcat(numero, ",");
-                    strcat(numero, parteFraccionaria);
-            }
-        }
+                /** Si la bases son iguales, es el mismo número **/
+                if(*baseOrigen == *baseDestino){
+                    if(*mostrarPasos == 1)
+                        printf("[convertir] Las bases son iguales, por ende el número no se convierte.");
+                }
 
-        /** Hace una conversión de base r a base 10 **/
-        else if(*baseOrigen != 10 && *baseDestino == 10){
-            separar(numero, parteEntera, parteFraccionaria);
-            origenADecimal(parteEntera, baseOrigen);
-            strcpy(numero, parteEntera);
-            if(strlen(parteFraccionaria) > 0){
-                    /** testear **/
-                    origenADecimalFrac(parteFraccionaria, baseDestino);
-                    strcat(numero, ",");
-                    strcat(numero, parteFraccionaria);
-            }
-        }
+                /** Hace una conversión de base 10 a base r **/
+                else if(*baseOrigen == 10 && *baseDestino != 10){
+                    decimalADestino(parteEntera, baseDestino);
+                    strcpy(numero, parteEntera);
+                    if(strlen(parteFraccionaria) > 0){
+                            decimalADestinoFrac(parteFraccionaria, baseDestino);
+                            strcat(numero, ",");
+                            strcat(numero, parteFraccionaria);
+                    }
+                }
 
-        /** Base origen r y base destino d diferentes a 10. Entonces, se utiliza como auxiliar la base 10 para hacer la conversión. **/
-        else {
-            /** Separación de la parte fraccionaria y la parte entera **/
-            separar(numero, parteEntera, parteFraccionaria);
+                /** Hace una conversión de base r a base 10 **/
+                else if(*baseOrigen != 10 && *baseDestino == 10){
+                    origenADecimal(parteEntera, baseOrigen);
+                    strcpy(numero, parteEntera);
+                    if(strlen(parteFraccionaria) > 0){
+                            /** testear **/
+                            origenADecimalFrac(parteFraccionaria, baseOrigen);
+                            strcat(numero, ",");
+                            strcat(numero, parteFraccionaria);
+                    }
+                }
 
-            /** Conversión de la parte entera **/
-                /** Conversión de base r a base 10. **/
-                origenADecimal(parteEntera, baseOrigen);
-                /** Conversión de base 10 a base d **/
-                decimalADestino(parteEntera, baseDestino);
-                strcpy(numero, parteEntera);
+                /** Base origen r y base destino d diferentes a 10. Entonces, se utiliza como auxiliar la base 10 para hacer la conversión. **/
+                else {
 
-            /** Una vez que ya se convirtió, ahora se convierte la parte fraccionaria si es que tiene **/
+                    /** Conversión de la parte entera **/
+                        /** Conversión de base r a base 10 **/
+                        origenADecimal(parteEntera, baseOrigen);
+                        /** Conversión de base 10 a base d **/
+                        decimalADestino(parteEntera, baseDestino);
+                        strcpy(numero, parteEntera);
+
+                    /** Una vez que ya se convirtió, ahora se convierte la parte fraccionaria si es que tiene **/
+                    if(strlen(parteFraccionaria) > 0){
+                            /** Conversión de base r a base 10 **/
+                            origenADecimalFrac(parteFraccionaria, baseOrigen);
+                            /** Conversión de base 10 a base d **/
+                            decimalADestinoFrac(parteFraccionaria, baseDestino);
+                            strcat(numero, ",");
+                            strcat(numero, parteFraccionaria);
+                    }
+                }
+
+            /** -- Fin convertidores -- **/
         }
     } else *retorno = 2;
 
-    free(parteEntera);
-    free(parteFraccionaria);
-    free(validador);
+    /** Liberación de memoria **/
+    free(parteEntera); free(parteFraccionaria); free(validador);
+
     return retorno;
 }
 
