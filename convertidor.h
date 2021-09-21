@@ -52,14 +52,14 @@ static int* pasajeInt(char *posicionActual){
 **/
 static void origenADecimal(char* parteEntera, int* baseOrigen){
     int *posicion, *potencia;
-    long double *suma;
-    long int *numeroFinal;
+    long float *suma;
+    long float *numeroFinal;
 
     /** Asignación de memoria **/
     posicion = (int*) malloc(sizeof(int));
     potencia = (int*) malloc(sizeof(int));
-    suma = (long double*) malloc(sizeof(double));
-    numeroFinal = (long int*) malloc(sizeof(int));
+    suma = (long float*) malloc(sizeof(float));
+    numeroFinal = (long float*) malloc(sizeof(float));
 
     *numeroFinal = 0; *suma = 0;
     *posicion = 0; // Posición del digito.
@@ -68,14 +68,14 @@ static void origenADecimal(char* parteEntera, int* baseOrigen){
     while(*posicion < strlen(parteEntera)){
         int *actual;
         actual = pasajeInt((parteEntera + *posicion));
-        (*suma) += pow(*baseOrigen, *potencia) * *actual; // nocomputa bien la potencia. por qué?
+        (*suma) += pow(*baseOrigen, *potencia) * *actual;
         (*posicion)++;
         (*potencia)--;
         /** Liberación de memoria **/
         free(actual);
     }
 
-    *numeroFinal = (int) *suma;
+    *numeroFinal = (float) *suma;
     sprintf(parteEntera, "%d", *numeroFinal);
 
     /** Liberación de memoria **/
@@ -111,6 +111,31 @@ static char* pasajeChar(int* actual){
     }
     return actualDestino;
 }
+
+/**
+    Recibe como parametro un numero y devuelve la posicion
+    de la , del numero. Si el numero no tiene , entonces
+    la posicion es nula
+**/
+static int* buscaPosComa(char* numero){
+
+    int *pos, *longitud, *encontro;
+
+    *longitud = strlen(numero);
+    *encontro = 0;
+    *pos = 0;
+
+    while(*pos < *longitud && !*encontro){
+        if(*(numero + *pos) == ','){
+            encontro = 1;
+        }
+        else
+            *(pos)++;
+    }
+
+    return pos;
+}
+
 
 /**
     Recibe como parametro la parte entera de un numero
@@ -198,14 +223,19 @@ static void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino){
     /** Liberación de memoria **/
     free(enBaseDestino); free(contador); free(parteEntera); free(parteFrac);
 }
-                    //se asume que la parte fraccionaria esta pasada por parametro como <numero fraccionario>
+    /**
+        Recibe como parametro la parte fraccionaria de un numero
+        en el formato <parte fraccionaria> y su base origen.
+        y devuelve el equivalente de la parte fraccionaria en
+        base decimal
+    **/
 static void origenADecimalFrac(char* parteFrac, int* baseOrigen){
     int *posicion;
-    float *enBaseDecimal;
+    long float *enBaseDecimal;
 
     /** Asignación de memoria **/
     posicion = (int*) malloc(sizeof(int));
-    enBaseDecimal = (float*) malloc(sizeof(float));
+    enBaseDecimal = (long float*) malloc(sizeof(float));
 
     *posicion = strlen(parteFrac) - 1;
     *enBaseDecimal = 0;
