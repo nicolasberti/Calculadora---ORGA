@@ -10,11 +10,9 @@
 #define MAX_PARTEENTERA     10
 #define MAX_PARTEFRACC      5
 
-#define MAX_PARTEENTERA     10
-#define MAX_PARTEFRACC      5
 
-#define PARTE_ENTERA        40
-#define PARTE_FRACCIONARIA  14
+#define PARTE_ENTERA        40 // El número FFFFFFFFFF (base 16) a base 2 ocupa 40 digitos. Entonces ese el máximo de la parte entera.
+#define PARTE_FRACCIONARIA  40
 #define PRECISION           5
 
 /** --- Funciones privadas --- **/
@@ -52,16 +50,14 @@ static int* pasajeInt(char *posicionActual){
 **/
 static void origenADecimal(char* parteEntera, int* baseOrigen){
     int *posicion, *potencia;
-    long float *suma;
-    long float *numeroFinal;
+    long long *suma; // Se usa el tipo long long porque para el máximo origen representable necesita 13 digitos.
 
     /** Asignación de memoria **/
     posicion = (int*) malloc(sizeof(int));
     potencia = (int*) malloc(sizeof(int));
-    suma = (long float*) malloc(sizeof(float));
-    numeroFinal = (long float*) malloc(sizeof(float));
+    suma = (long long*) malloc(sizeof(long));
 
-    *numeroFinal = 0; *suma = 0;
+    *suma = 0;
     *posicion = 0; // Posición del digito.
     *potencia = strlen(parteEntera) - 1; // Potencia que se tiene que elevar el digito.
 
@@ -75,11 +71,10 @@ static void origenADecimal(char* parteEntera, int* baseOrigen){
         free(actual);
     }
 
-    *numeroFinal = (float) *suma;
-    sprintf(parteEntera, "%d", *numeroFinal);
+    sprintf(parteEntera, "%lli", *suma);
 
     /** Liberación de memoria **/
-    free(posicion); free(potencia); free(numeroFinal); free(suma);
+    free(posicion); free(potencia); free(suma);
 }
 
 /**
@@ -113,31 +108,6 @@ static char* pasajeChar(int* actual){
 }
 
 /**
-    Recibe como parametro un numero y devuelve la posicion
-    de la , del numero. Si el numero no tiene , entonces
-    la posicion es nula
-**/
-static int* buscaPosComa(char* numero){
-
-    int *pos, *longitud, *encontro;
-
-    *longitud = strlen(numero);
-    *encontro = 0;
-    *pos = 0;
-
-    while(*pos < *longitud && !*encontro){
-        if(*(numero + *pos) == ','){
-            encontro = 1;
-        }
-        else
-            *(pos)++;
-    }
-
-    return pos;
-}
-
-
-/**
     Recibe como parametro la parte entera de un numero
     con su base destino, un contador, y el numero en su base
     destino correspondiente.
@@ -161,9 +131,11 @@ static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* enBaseD
     char *pasaje;
     pasaje = pasajeChar(actual);
     strcat(enBaseDestino, pasaje);
+
     /** Liberación de memoria **/
     free(pasaje); free(actual);
 }
+
 /**
     Recibe como parametro la parte entera
     de un numero con su base destino, y retorna
@@ -174,11 +146,11 @@ static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* enBaseD
 
     /** Asignación de memoria **/
     numero = (int*) malloc(sizeof(int));
-
     *numero = atoi(parteEntera); // Como siempre es de decimal a destino, utilizo la librería.
 
     strcpy(parteEntera, "");
     decimalADestinoAux(numero, baseDestino, parteEntera);
+
     /** Liberación de memoria **/
     free(numero);
 }
@@ -188,11 +160,12 @@ static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* enBaseD
     de un numero en base decimal, con su base destino.
     Y retorna su valor en la base destino.
 **/
-                                //se asume que la parte fraccionaria esta pasada por parametro como 0.<numero fraccionario> Al ser en base 10, se puede hacer esto
+// Se asume que la parte fraccionaria esta pasada por parametro como 0.<numero fraccionario> Al ser en base 10, se puede hacer esto
 static void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino){
     char *enBaseDestino;
     float *parteFrac;
-    int *contador, *parteEntera;
+    int *contador;
+    int *parteEntera;
 
     /** Asignación de memoria **/
     enBaseDestino = (char*) malloc(PARTE_FRACCIONARIA * sizeof(char));
@@ -231,11 +204,11 @@ static void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino){
     **/
 static void origenADecimalFrac(char* parteFrac, int* baseOrigen){
     int *posicion;
-    long float *enBaseDecimal;
+    float *enBaseDecimal;
 
     /** Asignación de memoria **/
     posicion = (int*) malloc(sizeof(int));
-    enBaseDecimal = (long float*) malloc(sizeof(float));
+    enBaseDecimal = (float*) malloc(sizeof(float));
 
     *posicion = strlen(parteFrac) - 1;
     *enBaseDecimal = 0;
@@ -256,7 +229,7 @@ static void origenADecimalFrac(char* parteFrac, int* baseOrigen){
     auxFrac = (char*) malloc(PARTE_FRACCIONARIA * sizeof(char));
     strcpy(auxFrac, parteFrac);
     strcpy(parteFrac, "");
-    strcat(parteFrac, auxFrac+2);
+    strncat(parteFrac, auxFrac+2, PRECISION); // Solo concateno con la precisión establecida.
     free(auxFrac);
 
     /** Liberación de memoria **/
