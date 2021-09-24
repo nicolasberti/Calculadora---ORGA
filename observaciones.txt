@@ -1,0 +1,28 @@
+Falta agregar el flag -wall
+* preguntar. ¿Se puede hacer exit sin antes hacer el free? Es decir, ante un problema que directamente aborte el programa sin hacer los free.
+	* preguntar. Hace falta hacer los if si no se pudo reservar memoria? (ej retorno -> if(retorno == NULL) exit... )
+
+/****************************************************************************************************************************\
+main
+	main
+	guardarParametros
+
+convertidor
+	convertir
+
+convertidores
+	origenADecimal
+	decimalADestino
+	origenADecimalFrac
+	decimalADestinoFrac
+	privada -> decimalADestinoAux
+
+auxiliares
+	pasajeInt
+	pasajeChar
+	separar
+	validar
+
+constantes.h -> guardo todas las contantes ahí para mayor modulación.
+
+En el informe poner que hace cada módulo.

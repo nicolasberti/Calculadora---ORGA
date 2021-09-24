@@ -1,0 +1,42 @@
+# depslib dependency file v1.0
+1632484564 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\main.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"convertidor.h"
+	"constantes.h"
+
+1632481575 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.h
+
+1632484615 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\constantes.h
+
+1632482226 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.c
+	"convertidor.h"
+	<string.h>
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	"convertidores.h"
+	"constantes.h"
+	"auxiliares.h"
+
+1632481373 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\auxiliares.h
+
+1632482725 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidores.h
+
+1632482109 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\auxiliares.c
+	"auxiliares.h"
+	"constantes.h"
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1632483583 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidores.c
+	"convertidores.h"
+	<stdio.h>
+	<string.h>
+	<math.h>
+	<stdlib.h>
+	"auxiliares.h"
+	"constantes.h"
+
