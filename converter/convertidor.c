@@ -9,7 +9,6 @@
 #include "constantes.h"
 #include "auxiliares.h"
 
-/** --- Funciones públicas --- **/
 
 int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPasos){
     int *retorno;
@@ -34,10 +33,9 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
         /** Separación de la parte fraccionaria y la parte entera **/
         separar(numero, parteEntera, parteFraccionaria);
 
+        // OBS: Si bien, se comprobó que el numero no tenga longitud mayor a 16 puede tener una longitud en alguna de sus divisiones (entera y fraccionaria) que si exceda.
         if( strlen(parteEntera) > MAX_PARTEENTERA || strlen(parteFraccionaria) > MAX_PARTEFRACC) {
-            // La parte entera o la parte fraccionaria supera el máximo de digitos permitidos.
-            *retorno = 1;
-
+            *retorno = 1; // La parte entera o la parte fraccionaria supera el máximo de digitos permitidos.
         } else {
 
             /** -- Inicio convertidores -- **/

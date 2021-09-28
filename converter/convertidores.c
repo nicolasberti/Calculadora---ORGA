@@ -7,20 +7,14 @@
 #include "auxiliares.h"
 #include "constantes.h"
 
-/**
-    Recibe como parametro la parte entera
-    de un numero con su base origen, y retorna
-    su valor en base decimal.
-**/
+
 void origenADecimal(char* parteEntera, int* baseOrigen){
     int *posicion, *potencia;
-    double *suma;
-    //long long *suma; // Se usa el tipo long long porque para el máximo origen representable necesita 13 digitos.
+    double *suma; // Se utiliza un double para tener los digitos necesarios en la suma.
 
     /** Asignación de memoria **/
     posicion = (int*) malloc(sizeof(int));
     potencia = (int*) malloc(sizeof(int));
-    //suma = (long long*) malloc(sizeof(long));
     suma = (double*) malloc(sizeof(double));
 
     *suma = 0;
@@ -37,7 +31,7 @@ void origenADecimal(char* parteEntera, int* baseOrigen){
         free(actual);
     }
 
-    sprintf(parteEntera, "%.0lf", *suma);
+    sprintf(parteEntera, "%.0lf", *suma); // Se copia el double sin su parte decimal.
 
     /** Liberación de memoria **/
     free(posicion); free(potencia); free(suma);
@@ -45,9 +39,7 @@ void origenADecimal(char* parteEntera, int* baseOrigen){
 
 
 /**
-    Recibe como parametro la parte entera de un numero
-    con su base destino, un contador, y el numero en su base
-    destino correspondiente.
+    Método auxiliar : Convierte la parte entera de un número de base 10 a un número de base destino.
 **/
 static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* enBaseDestino){
     int *actual;
@@ -73,11 +65,7 @@ static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* enBaseD
     free(pasaje); free(actual);
 }
 
-/**
-    Recibe como parametro la parte entera
-    de un numero con su base destino, y retorna
-    su valor en la base destino.
-**/
+
 void decimalADestino(char* parteEntera, int* baseDestino){
     int *numero;
 
@@ -92,12 +80,8 @@ void decimalADestino(char* parteEntera, int* baseDestino){
     free(numero);
 }
 
-/**
-    Recibe como parametro la parte fraccionaria
-    de un numero en base decimal, con su base destino.
-    Y retorna su valor en la base destino.
-**/
-// Se asume que la parte fraccionaria esta pasada por parametro como 0.<numero fraccionario> Al ser en base 10, se puede hacer esto
+
+// Se asume que la parte fraccionaria esta pasada por parametro como 0.<numero fraccionario>. Al ser en base 10, se puede hacer esto.
 void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino){
     char *enBaseDestino;
     float *parteFrac;
@@ -133,12 +117,8 @@ void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino){
     /** Liberación de memoria **/
     free(enBaseDestino); free(contador); free(parteEntera); free(parteFrac);
 }
-    /**
-        Recibe como parametro la parte fraccionaria de un numero
-        en el formato <parte fraccionaria> y su base origen.
-        y devuelve el equivalente de la parte fraccionaria en
-        base decimal
-    **/
+
+
 void origenADecimalFrac(char* parteFrac, int* baseOrigen){
     int *posicion;
     float *enBaseDecimal;
@@ -159,7 +139,7 @@ void origenADecimalFrac(char* parteFrac, int* baseOrigen){
         free(pasaje);
     }
 
-    sprintf(parteFrac, "%f", *enBaseDecimal);
+    sprintf(parteFrac, "%f", *enBaseDecimal); // Copia lo convertido en la cadena parteFrac
 
     /** En este momento, parteFrac contendrá el "0,(parteFraccionaria convertida)" entonces utilizo este algoritmo para sacar el "0," **/
     char *auxFrac;

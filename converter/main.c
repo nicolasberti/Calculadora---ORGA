@@ -82,10 +82,6 @@ int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, i
             /** Activa la ayuda del programa **/
            } else LEER("-h"){
                     *retorno = 1;
-                    printf("\n%s: Convierte un numero de una base r a una base d.\n", *argv);
-                    printf("Si no se ingresa ninguna base se asume que, r=d=10.\n");
-                    printf("El comando -v mostrara paso por paso la conversion del numero.\n");
-                    mostrarUsoCorrecto;
 
             /** Muestra por consola los pasos que se van haciendo para convertir al número **/
            } else LEER("-v"){
@@ -117,11 +113,6 @@ int main(int argc, char *argv[]){
 
     /**
         Guardo los parametros ingresados en la línea de comandos en los punteros.
-
-        Retorna 0:      Cuando los parametros fueron guardados con éxito.
-        Retorna 1:      Cuando los parametros fueron guardados con éxito y el usuario pidió ayuda (parametro -h)
-        Retorna r:      Cuando los parametros no fueron guardados porque ocurrió un error.
-                r>1.
     **/
     retornado = guardarParametros(&argc, argv, numero, baseOrigen, baseDestino);
 
@@ -134,7 +125,13 @@ int main(int argc, char *argv[]){
             retornado = convertir(numero, baseOrigen, baseDestino, mostrarPasos);
             if(*retornado == 0) printf("Numero convertido -> %s (base %i)", numero, *baseDestino);
             else printf("Ocurrio un error y el numero no pudo ser convertido.");
-    } else if(*retornado > 1) {
+    } else if(*retornado == 1){ // En caso de que el usuario pidió ayuda (parametro -h) se mostrará este cartel sin convertir el número.
+        printf("\n%s: Convierte un numero de una base r a una base d.\n", *argv);
+        printf("Si no se ingresa una base destino y/o origen entonces, se asumira que la base destino y/o origen es 10.\n");
+        printf("El comando -v mostrara paso por paso la conversion del numero.\n");
+        mostrarUsoCorrecto;
+    }
+    else {
         printf("Los parametros ingresados no son validos. Intente nuevamente.\n");
         mostrarUsoCorrecto;
     }
@@ -142,7 +139,7 @@ int main(int argc, char *argv[]){
     /** Liberación de memoria **/
     free(baseOrigen); free(baseDestino); free(numero); free(mostrarPasos);
 
-    if(*retornado == 0) {
+    if(*retornado <= 1) {
         /** Liberación de memoria **/
         free(retornado);
         /** El programa finaliza correctamente **/

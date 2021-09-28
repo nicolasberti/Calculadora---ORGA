@@ -1,4 +1,3 @@
-Falta agregar el flag -wall
 * preguntar. ¿Se puede hacer exit sin antes hacer el free? Es decir, ante un problema que directamente aborte el programa sin hacer los free.
 	* preguntar. Hace falta hacer los if si no se pudo reservar memoria? (ej retorno -> if(retorno == NULL) exit... )
 

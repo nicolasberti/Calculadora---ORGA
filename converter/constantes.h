@@ -16,12 +16,12 @@
 
     #define SEPARADOR ','           // Indica el separador que se utilizará. Según nuestra región, usaremos la coma.
 
-    #define MAX_PARTEENTERA     10
-    #define MAX_PARTEFRACC      5
+    #define MAX_PARTEENTERA     10  // Máximos dígitos permitidos en la parte entera
+    #define MAX_PARTEFRACC      5   // Máximos dígitos permitidos en la parte fraccionaria
 
     #define PARTE_ENTERA        40 // El número FFFFFFFFFF (base 16) a base 2 ocupa 40 digitos. Entonces ese el máximo de la parte entera.
     #define PARTE_FRACCIONARIA  40
-    #define PRECISION           5
+    #define PRECISION           5  // Presición permitida según el enunciado
 
 
 #endif // CONSTANTES_H_INCLUDED

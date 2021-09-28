@@ -8,9 +8,9 @@
 
 1632481575 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.h
 
-1632484615 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\constantes.h
+1632826660 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\constantes.h
 
-1632482226 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.c
+1632826789 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.c
 	"convertidor.h"
 	<string.h>
 	<math.h>
@@ -31,7 +31,7 @@
 	<string.h>
 	<stdlib.h>
 
-1632483583 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidores.c
+1632827005 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidores.c
 	"convertidores.h"
 	<stdio.h>
 	<string.h>
