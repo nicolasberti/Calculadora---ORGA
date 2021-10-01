@@ -40,3 +40,37 @@
 	"auxiliares.h"
 	"constantes.h"
 
+1632855687 source:c:\users\nicolás\onedrive\proyectoorga\proyectoorga\converter\convertidor.c
+	"convertidor.h"
+	<string.h>
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	"convertidores.h"
+	"constantes.h"
+	"auxiliares.h"
+
+1632855694 c:\users\nicolás\onedrive\proyectoorga\proyectoorga\converter\convertidor.h
+
+1632855754 c:\users\nicolás\onedrive\proyectoorga\proyectoorga\converter\convertidores.h
+
+1632826660 c:\users\nicolás\onedrive\proyectoorga\proyectoorga\converter\constantes.h
+
+1632855674 c:\users\nicolás\onedrive\proyectoorga\proyectoorga\converter\auxiliares.h
+
+1632855755 source:c:\users\nicolás\onedrive\proyectoorga\proyectoorga\converter\convertidores.c
+	"convertidores.h"
+	<stdio.h>
+	<string.h>
+	<math.h>
+	<stdlib.h>
+	"auxiliares.h"
+	"constantes.h"
+
+1632855592 source:c:\users\nicolás\onedrive\proyectoorga\proyectoorga\converter\main.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"convertidor.h"
+	"constantes.h"
+

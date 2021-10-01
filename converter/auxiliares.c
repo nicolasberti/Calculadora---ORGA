@@ -81,34 +81,22 @@ int* pasajeInt(char *posicionActual){
 }
 
 
+// FIJARSE BIEN SI ESTÁ BIEN LIBERADA LA MEMORIA Y VER DETALLES DE CÓDIGO.
 int* validar(char *numero, int *r){
-    int *size, *retorno, *contador, *i;
+    int *encontroError, *size, *contador;
     char *caracteres;
-    /** Asignación de memoria **/
-    size = (int*) malloc(sizeof(int));
-    retorno = (int*) malloc(sizeof(int));
+
     contador = (int*) malloc(sizeof(int));
-    i = (int*) malloc(sizeof(int));
+    encontroError = (int*) malloc(sizeof(int));
+    size = (int*) malloc(sizeof(int));
     caracteres = (char*) malloc(25 * sizeof(char));
 
-    *size = strlen(numero); // Tamaño del número.
-    *retorno = 0;
-    *contador = 0;
+    *encontroError = 0;
     strcpy(caracteres, "");
+    *size = strlen(numero);
+    *contador = 0;
 
-    /**
-        Explicación del algoritmo:
-
-        El algoritmo comienza creando una cadena llamada "caracteres" que se encontraran los caracteres de la base r.
-
-        Después, comprueba que no contenga los siguientes casos particulares la cadena número.
-            * El separador primero, la cual consideramos un formato inválido.
-            * El último digito, es igual al separador.
-
-        Finalmente, se hace uso de dos ciclos for para comprobar que cada caracter de la cadena número pertenezca a la cadena caracteres (esto es, que pertenezca a la base r) y además, comprueba
-        que no contenga más de 1 separador (ya que sería un número inválido).
-    **/
-    switch(*r){
+    switch(*r){ // Agrega caracteres a la cadena caracteres según la base pasada como parametro.
             case 16: strcat(caracteres, "Ff");
             case 15: strcat(caracteres, "Ee");
             case 14: strcat(caracteres, "Dd");
@@ -125,54 +113,57 @@ int* validar(char *numero, int *r){
             case 3: strcat(caracteres, "2");
             case 2: strcat(caracteres, "01");
     }
+
+    /**
+        Fases del algoritmo
+        1. Valida casos excepcionales
+        2. Valida si el número pertenece a la base y que no contenga más de un separador.
+    **/
+
+    /** Fase 1 -> Validación de casos excepcionales **/
+
     /** Primer caso particular -> El primer caracter es el separador **/
     if(*size == 1 && *(numero) == SEPARADOR)
-        *retorno = 1;
+        *encontroError = 1;
     /** Segundo caso particular -> El último caracter es el separador **/
     else if(*(numero+(*size)-1) == SEPARADOR)
-        *retorno = 1;
+        *encontroError = 1;
+    /** Fase 2 -> Validación del número **/
     else {
-        for(*i = 0; *i < *size && *retorno == 0; (*i)++){
-            int *igual;
 
-            /** Asignación de memoria **/
-            igual = (int*) malloc(sizeof(int));
-
-            *igual = 1;
-
-            /** Encuentra un separador -> incrementa el contador de separadores **/
-            if(*(numero+*i) == SEPARADOR) {
+        /**
+            Explicación del algoritmo:
+                El algoritmo comprueba para cada caracter de la cadena número si ese caracter
+                pertenece a la cadena caracteres. Esto es, si es un caracter válido de la base r.
+                A su vez, comprueba de que en la cadena número no haya más de un separador tal que
+                esto se considería un formato inválido.
+        **/
+        int *igual, *i;
+        igual = (int*) malloc(sizeof(int));
+        *igual = 0;
+        i = (int*) malloc(sizeof(int));
+        for(*i = 0; *i < strlen(numero) && *encontroError == 0; (*i)++) {
+            int *j;
+            j = (int*) malloc(sizeof(int));
+            for(*j = 0; *j < strlen( caracteres ) && *igual == 0; (*j)++) {
+                if( *(numero+*i) == SEPARADOR ) {
                     (*contador)++;
-                    *igual = 0; /** si *igual==0 indica que, el caracter es igual a algún caracter de la cadena caracteres **/
-            } else {
-
-                int *j;
-                /** Asignación de memoria **/
-                j = (int*) malloc(sizeof(int));
-
-                for(*j = 0; *j < strlen(caracteres) && *igual==1; (*j)++){
-                    if(*(numero+*i) == *(caracteres+*j))
-                        *igual = 0;
-                }
-
-                /** Liberación de memoria **/
-                free(j);
+                    *igual = 1;
+                } else
+                    if( *(numero+*i) == *(caracteres+*j) )
+                        *igual = 1;
             }
+            if(*igual == 0) // Si comprobó el caracter *(numero+i) con todos los caracteres de la cadena caracteres y ninguno resultó igual, significa que no es un caracter de la base.
+                *encontroError = 1;
+            else
+                *igual = 0;
+            if(*contador > 1)
+                *encontroError = 1;
+            free(j);
+		}
+		free(igual); free(i);
 
-            *retorno = *igual; // Si la variable igual quedó en 1 entonces indica que no encontró algún caracter en la cadena caracteres.
-
-            if(*contador > 1) // Si el contador es mayor que 1, hay más de 1 separador, por ende, el número es inválido.
-                *retorno = 1;
-
-            /** Liberación de memoria **/
-            free(igual);
-        }
-        /** Liberación de memoria **/
-        free(i);
     }
-
-    /** Liberación de memoria **/
     free(size); free(caracteres); free(contador);
-
-    return retorno;
+    return encontroError;
 }
