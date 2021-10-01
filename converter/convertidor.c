@@ -48,10 +48,10 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
 
                 /** Hace una conversión de base 10 a base r **/
                 else if(*baseOrigen == 10 && *baseDestino != 10){
-                    decimalADestino(parteEntera, baseDestino);
+                    decimalADestino(parteEntera, baseDestino, mostrarPasos);
                     strcpy(numero, parteEntera);
                     if(strlen(parteFraccionaria) > 0){
-                            decimalADestinoFrac(parteFraccionaria, baseDestino);
+                            decimalADestinoFrac(parteFraccionaria, baseDestino, mostrarPasos);
                             strcat(numero, ",");
                             strcat(numero, parteFraccionaria);
                     }
@@ -59,11 +59,15 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
 
                 /** Hace una conversión de base r a base 10 **/
                 else if(*baseOrigen != 10 && *baseDestino == 10){
-                    origenADecimal(parteEntera, baseOrigen);
+                    origenADecimal(parteEntera, baseOrigen, mostrarPasos);
                     strcpy(numero, parteEntera);
+
+                    if(*mostrarPasos)
+                        printf("= %d \n", *numero);
+
                     if(strlen(parteFraccionaria) > 0){
                             /** testear **/
-                            origenADecimalFrac(parteFraccionaria, baseOrigen);
+                            origenADecimalFrac(parteFraccionaria, baseOrigen, mostrarPasos);
                             strcat(numero, ",");
                             strcat(numero, parteFraccionaria);
                     }
@@ -74,17 +78,17 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
 
                     /** Conversión de la parte entera **/
                         /** Conversión de base r a base 10 **/
-                        origenADecimal(parteEntera, baseOrigen);
+                        origenADecimal(parteEntera, baseOrigen, mostrarPasos);
                         /** Conversión de base 10 a base d **/
-                        decimalADestino(parteEntera, baseDestino);
+                        decimalADestino(parteEntera, baseDestino, mostrarPasos);
                         strcpy(numero, parteEntera);
 
                     /** Una vez que ya se convirtió, ahora se convierte la parte fraccionaria si es que tiene **/
                     if(strlen(parteFraccionaria) > 0){
                             /** Conversión de base r a base 10 **/
-                            origenADecimalFrac(parteFraccionaria, baseOrigen);
+                            origenADecimalFrac(parteFraccionaria, baseOrigen, mostrarPasos);
                             /** Conversión de base 10 a base d **/
-                            decimalADestinoFrac(parteFraccionaria, baseDestino);
+                            decimalADestinoFrac(parteFraccionaria, baseDestino,mostrarPasos);
                             strcat(numero, ",");
                             strcat(numero, parteFraccionaria);
                     }
