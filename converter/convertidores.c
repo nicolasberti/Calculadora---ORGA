@@ -18,7 +18,8 @@ void origenADecimal(char* parteEntera, int* baseOrigen, int* mostrarPasos){
     suma = (double*) malloc(sizeof(double));
 
     if(*mostrarPasos){
-        printf("Paso de base origen %i a base decimal \n",*baseOrigen);
+        SEPARADORCONVERTORES;
+        printf("\nPaso la parte entera de base origen %i a base 10 (decimal)\n",*baseOrigen);
     }
 
     *suma = 0;
@@ -27,13 +28,15 @@ void origenADecimal(char* parteEntera, int* baseOrigen, int* mostrarPasos){
 
     while(*posicion < strlen(parteEntera)){
         int *actual;
+
         /** Muestra los pasos detallados de las conversiones por consola, si es que se piden **/
         if(*mostrarPasos){
-            if(!*potencia)
-                printf("%c * %i^%i + ",*(parteEntera + *posicion), *baseOrigen, *potencia);
+            if(!*potencia != 0)
+                printf("%c * %i^%i",*(parteEntera + *posicion), *baseOrigen, *potencia);
             else
-                printf("%c * %i^%i ",*(parteEntera + *posicion), *baseOrigen, *potencia);
+                printf("%c * %i^%i + ",*(parteEntera + *posicion), *baseOrigen, *potencia);
         }
+
         actual = pasajeInt((parteEntera + *posicion));
         (*suma) += pow(*baseOrigen, *potencia) * *actual;
         (*posicion)++;
@@ -43,7 +46,8 @@ void origenADecimal(char* parteEntera, int* baseOrigen, int* mostrarPasos){
     }
 
     if(*mostrarPasos){
-        printf("\n El resultado de la conversion es : %d", *suma);
+        printf(" = %.0lf (Resultado final de la parte entera)", *suma);
+        SEPARADORCONVERTORES;
     }
 
     sprintf(parteEntera, "%.0lf", *suma); // Se copia el double sin su parte decimal.
@@ -54,7 +58,7 @@ void origenADecimal(char* parteEntera, int* baseOrigen, int* mostrarPasos){
 
 
 /**
-    Método auxiliar : Convierte la parte entera de un número de base 10 a un número de base destino.
+    Método auxiliar: Convierte la parte entera de un número de base 10 a un número de base destino.
 **/
 static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* enBaseDestino, int* mostrarPasos){
     int *actual;
@@ -73,7 +77,10 @@ static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* enBaseD
         if(*mostrarPasos)
             printf("%i \n",*parteEntera);
         if(*parteEntera != 0)
-            decimalADestinoAux(parteEntera, baseDestino, enBaseDestino);
+            decimalADestinoAux(parteEntera, baseDestino, enBaseDestino, mostrarPasos);
+        else
+            if(*mostrarPasos)
+                printf("\nHago la concatenacion de los ultimos restos a los primeros para formar el numero:");
     }
 
     char *pasaje;
@@ -81,9 +88,7 @@ static void decimalADestinoAux(int* parteEntera, int* baseDestino, char* enBaseD
     strcat(enBaseDestino, pasaje);
 
     if(*mostrarPasos){
-        printf("\n El resultado de la conversion es: ");
-        imprimirCadena(enBaseDestino);
-        printf("\n");
+        printf("\n -> %s", enBaseDestino);
     }
 
     /** Liberación de memoria **/
@@ -99,11 +104,16 @@ void decimalADestino(char* parteEntera, int* baseDestino, int* mostrarPasos){
     *numero = atoi(parteEntera); // Como siempre es de decimal a destino, utilizo la librería.
 
     if(*mostrarPasos){
-        printf("Paso de base decimal a base destino %i \n", *baseDestino)
+        SEPARADORCONVERTORES;
+        printf("\nPaso la parte entera de base 10 (decimal) a base destino %i \n", *baseDestino);
     }
 
     strcpy(parteEntera, "");
     decimalADestinoAux(numero, baseDestino, parteEntera, mostrarPasos);
+    if(*mostrarPasos){
+        printf(" (Resultado final de la parte entera)");
+        SEPARADORCONVERTORES;
+    }
 
     /** Liberación de memoria **/
     free(numero);
@@ -124,7 +134,8 @@ void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino, int* mostrar
     parteEntera = (int*) malloc(sizeof(int));
 
     if(*mostrarPasos){
-        printf("Paso la parte fraccionaria del numero de base decimal a base destino %i\n",*baseDestino);
+        SEPARADORCONVERTORES;
+        printf("\nPaso la parte fraccionaria del numero de base 10 (decimal) a base destino %i\n",*baseDestino);
     }
 
 
@@ -136,7 +147,7 @@ void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino, int* mostrar
     while(*contador < PRECISION){
 
         if(*mostrarPasos){
-            printf("0.%f * %i = ",*parteFrac, *baseDestino);
+            printf("%f * %i = ",*parteFrac, *baseDestino);
         }
         (*parteFrac) *= (*baseDestino);
         (*parteEntera) = *parteFrac;
@@ -156,9 +167,8 @@ void decimalADestinoFrac(char* parteFraccionaria, int* baseDestino, int* mostrar
     strcpy(parteFraccionaria, enBaseDestino);
 
     if(*mostrarPasos){
-        printf("\n El resultado de la conversion es: ");
-        imprimirCadena(enBaseDestino);
-        printf("\n");
+        printf("\nEl resultado de la conversion de la parte fraccionaria es: 0.%s", enBaseDestino);
+        SEPARADORCONVERTORES;
     }
 
     /** Liberación de memoria **/
@@ -178,29 +188,39 @@ void origenADecimalFrac(char* parteFrac, int* baseOrigen, int* mostrarPasos){
     *enBaseDecimal = 0;
 
     if(*mostrarPasos){
-        printf("Paso la parte fraccionaria del numero de base origen %i a base decimal \n ",*baseOrigen);
+        SEPARADORCONVERTORES;
+        printf("\nPaso la parte fraccionaria del numero de base origen %i a base decimal\n",*baseOrigen);
     }
 
 
     while(*posicion >= 0){
         int *pasaje;
         pasaje = pasajeInt( (parteFrac+*posicion));
+
+            if(*mostrarPasos)
+                printf("Digito: %i | Posicion: %i\n", *pasaje, *posicion);
+            if(*mostrarPasos)
+                printf("%f + %i", *enBaseDecimal, *pasaje);
+
         (*enBaseDecimal) += *pasaje;
 
-        if(*mostrarPasos){
-            if(*posicion > 0)
-                printf("%i/%i) + ",*pasaje, *baseOrigen);
-            else
-                printf("%i/%i");
-        }
+            if(*mostrarPasos)
+                printf(" = %f\n", *enBaseDecimal);
+            if(*mostrarPasos)
+                printf("%f / %i", *enBaseDecimal, *baseOrigen);
 
         (*enBaseDecimal) = *enBaseDecimal / *baseOrigen;
+
+             if(*mostrarPasos)
+                printf(" = %f\n\n", *enBaseDecimal);
+
         (*posicion)--;
         free(pasaje);
     }
 
     if(*mostrarPasos){
-        printf("\n El resultado de la conversion es: 0.%f",*enBaseDecimal);
+        printf("\nEl resultado de la conversion es: %f",*enBaseDecimal);
+        SEPARADORCONVERTORES;
     }
 
     sprintf(parteFrac, "%f", *enBaseDecimal); // Copia lo convertido en la cadena parteFrac

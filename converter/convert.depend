@@ -1,16 +1,16 @@
 # depslib dependency file v1.0
-1632484564 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\main.c
+1633366167 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\main.c
 	<stdio.h>
 	<string.h>
 	<stdlib.h>
 	"convertidor.h"
 	"constantes.h"
 
-1632481575 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.h
+1633366455 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.h
 
-1632826660 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\constantes.h
+1633366945 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\constantes.h
 
-1632826789 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.c
+1633366916 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.c
 	"convertidor.h"
 	<string.h>
 	<math.h>
@@ -20,18 +20,18 @@
 	"constantes.h"
 	"auxiliares.h"
 
-1632481373 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\auxiliares.h
+1633366322 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\auxiliares.h
 
-1632482725 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidores.h
+1633366568 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidores.h
 
-1632482109 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\auxiliares.c
+1633366340 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\auxiliares.c
 	"auxiliares.h"
 	"constantes.h"
 	<stdio.h>
 	<string.h>
 	<stdlib.h>
 
-1632827005 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidores.c
+1633346860 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidores.c
 	"convertidores.h"
 	<stdio.h>
 	<string.h>

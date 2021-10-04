@@ -6,6 +6,9 @@
 /** Macro para el argumento -h **/
 #define mostrarUsoCorrecto   printf("Usa: %s -n <numero> [-s <base_origen>] [-d <base_destino>] [-v] [-h]\n", *argv)
 
+/** Macro para separar los convertores cuadno el -v está activo **/
+#define SEPARADORCONVERTORES    printf("\n#################################################################################\n");
+
 /** Lee el argumento A **/
 #define LEER(A) if( strcmp(*(argv+*i), A) ==0)
 

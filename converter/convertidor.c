@@ -48,9 +48,14 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
 
                 /** Hace una conversión de base 10 a base r **/
                 else if(*baseOrigen == 10 && *baseDestino != 10){
+                    if(*mostrarPasos)
+                        printf("\nConversion de la parte entera:");
                     decimalADestino(parteEntera, baseDestino, mostrarPasos);
                     strcpy(numero, parteEntera);
+                    //hacer convertidor cuando sume o simplemente queda igua letc etc printf
                     if(strlen(parteFraccionaria) > 0){
+                            if(*mostrarPasos)
+                                printf("\n\nConversion de la parte fraccionaria:");
                             decimalADestinoFrac(parteFraccionaria, baseDestino, mostrarPasos);
                             strcat(numero, ",");
                             strcat(numero, parteFraccionaria);
@@ -59,14 +64,13 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
 
                 /** Hace una conversión de base r a base 10 **/
                 else if(*baseOrigen != 10 && *baseDestino == 10){
+                    if(*mostrarPasos)
+                        printf("\nConversion de la parte entera:");
                     origenADecimal(parteEntera, baseOrigen, mostrarPasos);
                     strcpy(numero, parteEntera);
-
-                    if(*mostrarPasos)
-                        printf("= %d \n", *numero);
-
                     if(strlen(parteFraccionaria) > 0){
-                            /** testear **/
+                            if(*mostrarPasos)
+                                printf("\n\nConversion de la parte fraccionaria:");
                             origenADecimalFrac(parteFraccionaria, baseOrigen, mostrarPasos);
                             strcat(numero, ",");
                             strcat(numero, parteFraccionaria);
@@ -77,6 +81,10 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
                 else {
 
                     /** Conversión de la parte entera **/
+                        if(*mostrarPasos) {
+                            printf("\nConversion de la parte entera:");
+                            printf("\nComo la base origen es %i y la base destino es %i. Se usara la base 10 como auxiliar.", *baseOrigen, *baseDestino);
+                        }
                         /** Conversión de base r a base 10 **/
                         origenADecimal(parteEntera, baseOrigen, mostrarPasos);
                         /** Conversión de base 10 a base d **/
@@ -85,6 +93,10 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
 
                     /** Una vez que ya se convirtió, ahora se convierte la parte fraccionaria si es que tiene **/
                     if(strlen(parteFraccionaria) > 0){
+                            if(*mostrarPasos) {
+                                printf("\n\nConversion de la parte fraccionaria:");
+                                printf("\nComo la base origen es %i y la base destino es %i. Se usara la base 10 como auxiliar.", *baseOrigen, *baseDestino);
+                            }
                             /** Conversión de base r a base 10 **/
                             origenADecimalFrac(parteFraccionaria, baseOrigen, mostrarPasos);
                             /** Conversión de base 10 a base d **/

@@ -56,23 +56,6 @@ char* pasajeChar(int* actual){
     return actualDestino;
 }
 
-/** Imprime una cadena de caracteres **/
-void imprimirCadena(char *cadena){
-    int *posicion, *longitud;
-
-    /** Asignacion de memoria**/
-    posicion = (int*) malloc(sizeof(int));
-    *posicion = 0;
-    *longitud = strlen(cadena);
-
-    while(*posicion < *longitud){
-        printf("%c",*(cadena + *posicion));
-        *posicion++;
-    }
-    free(posicion);
-
-}
-
 
 int* pasajeInt(char *posicionActual){
     int *actual;
@@ -98,7 +81,6 @@ int* pasajeInt(char *posicionActual){
 }
 
 
-// FIJARSE BIEN SI ESTÁ BIEN LIBERADA LA MEMORIA Y VER DETALLES DE CÓDIGO.
 int* validar(char *numero, int *r){
     int *encontroError, *size, *contador;
     char *caracteres;
