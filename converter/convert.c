@@ -124,7 +124,7 @@ int main(int argc, char *argv[]){
             free(retornado);
             retornado = convertir(numero, baseOrigen, baseDestino, mostrarPasos);
             if(*retornado == 0) printf("\nNumero convertido -> %s (base %i)", numero, *baseDestino);
-            else printf("Ocurrio un error y el numero no pudo ser convertido.");
+            else printf("Ocurrio un error (numero: %i) y el numero no pudo ser convertido.", *retornado);
     } else if(*retornado == 1){ // En caso de que el usuario pidió ayuda (parametro -h) se mostrará este cartel sin convertir el número.
         printf("\n%s: Convierte un numero de una base r a una base d.\n", *argv);
         printf("Si no se ingresa una base destino y/o origen entonces, se asumira que la base destino y/o origen es 10.\n");
