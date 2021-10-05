@@ -74,3 +74,10 @@
 	"convertidor.h"
 	"constantes.h"
 
+1633452528 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convert.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"convertidor.h"
+	"constantes.h"
+
