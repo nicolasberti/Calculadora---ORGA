@@ -30,9 +30,9 @@ int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, i
     int *retorno;
     retorno = (int*) malloc(sizeof(int));
     *retorno = 0;
+
     /** Valida que los argumentos sean correctos --> Rango de los argumentos [3, 9] **/
     if(*argc < 3 || *argc > 9) {
-        //mostrarUsoCorrecto;
         *retorno = 5;
     }
     else {
@@ -40,10 +40,10 @@ int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, i
         i = (int*) malloc(sizeof(int));
         *i = 1; // Iterador de los argumentos recibidos como parametros. Comienzo desde i=1 para no leer el parametro "converter"
 
-        /*
-                Si argv[1] != -n entonces no cumple con el formato pedido.
-                Aclaración: Después del <number> puede ir cualquier parametro en cualquier orden, pero al principio se tiene que respetar el orden.
-        */
+        /**
+            Si argv[1] != -n entonces no cumple con el formato pedido.
+            Aclaración: Después del <number> puede ir cualquier parametro en cualquier orden, pero al principio se tiene que respetar el orden.
+        **/
         if( strcmp(*(argv+1), "-n") !=0)
             *retorno = 2;
 
@@ -86,9 +86,11 @@ int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, i
             /** Muestra por consola los pasos que se van haciendo para convertir al número **/
            } else LEER("-v"){
                     *mostrarPasos = 1;
+
            } else *retorno = 5; // Ante cualquier otro parametro, indica un error.
             (*i)++;
         }
+        // Libero la memoria del contador
         free(i);
     }
     return retorno;
@@ -96,6 +98,7 @@ int* guardarParametros(int *argc, char *argv[], char *numero, int *baseOrigen, i
 
 
 int main(int argc, char *argv[]){
+
     int *baseOrigen, *baseDestino;
     char *numero; // Arreglo donde se almacenará el número. Se usará la aritmetica de punteros para manejarlo.
     int *retornado; // Retorno de la función guardarParametros
@@ -116,24 +119,51 @@ int main(int argc, char *argv[]){
     **/
     retornado = guardarParametros(&argc, argv, numero, baseOrigen, baseDestino);
 
-    if( *retornado == 0){
+
+    if( *retornado == 0){ // Leyó correctamente los parametros
+
             if(*mostrarPasos == 1){ // Carteles a mostrar por consola si el usuario solicitó "-v"
                 printf("Numero a convertir: %s\n", numero);
                 printf("Base origen: %i | Base destino: %i\n", *baseOrigen, *baseDestino);
             }
+            // Libero lo retornado ya que re-utilizo la variable para saber si la conversión se pudo realizar.
             free(retornado);
             retornado = convertir(numero, baseOrigen, baseDestino, mostrarPasos);
-            if(*retornado == 0) printf("\nNumero convertido -> %s (base %i)", numero, *baseDestino);
-            else printf("Ocurrio un error (numero: %i) y el numero no pudo ser convertido.", *retornado);
-    } else if(*retornado == 1){ // En caso de que el usuario pidió ayuda (parametro -h) se mostrará este cartel sin convertir el número.
+
+            if(*retornado == 0)
+                printf("\nNumero convertido -> %s (base %i)", numero, *baseDestino);
+            else {
+                 printf("Ocurrio un error (numero: %i) y el numero no pudo ser convertido.", *retornado);
+                 printf("\nDescripcion del error: ");
+                 switch(*retornado){
+                    case 1: printf("La parte entera y/o la parte fraccionaria supera el maximo de digitos permitidos."); break;
+                    case 2: printf("El numero no es valido."); break;
+                 }
+            }
+
+    } else if(*retornado == 1){ // El usuario pidió ayuda.
+
+        // En caso de que el usuario pidió ayuda (parametro -h) se mostrará este cartel sin convertir el número.
+
         printf("\n%s: Convierte un numero de una base r a una base d.\n", *argv);
-        printf("Si no se ingresa una base destino y/o origen entonces, se asumira que la base destino y/o origen es 10.\n");
-        printf("El comando -v mostrara paso por paso la conversion del numero.\n");
+        mostrarUsoCorrecto;
+
+        printf("\nDescripcion de los parametros:");
+        printf("\n -n <numero>: Indica el numero que se convertira.");
+        printf("\n -s <base_origen>: Indica la base origen del numero que se convertira. (Bases permitidas [2,16])");
+        printf("\n -d <base_destino>: Indica la base destino del numero ingresado. (Bases permitidas [2,16])");
+        printf("\n     Si no se ingresa una base destino y/o origen entonces, se asumira que la base destino y/o origen es 10.");
+        printf("\n -v: Muestra paso por paso la conversion del numero.\n\n");
+
     }
     else {
-        printf("Los parametros ingresados no son validos. Intente nuevamente.\n");
+
+        // El usuario ingresó parametros inválidos, asi que se muestra el uso correcto sin explicar cada parametro.
+        printf("\nLos parametros ingresados no son validos. Intente nuevamente.\n");
         mostrarUsoCorrecto;
-        printf("Para más ayuda utiliza el parametro -h");
+        printf("Para mas ayuda utiliza el parametro -h. (Sin ingresar parametros invalidos)\n");
+        printf("Por ejemplo, ingrese %s -n 0 -h\n", *argv);
+
     }
 
     /** Liberación de memoria **/

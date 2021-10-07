@@ -11,6 +11,7 @@
 
 
 int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPasos){
+
     int *retorno;
     char *parteEntera;
     char *parteFraccionaria;
@@ -43,7 +44,7 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
                 /** Si la bases son iguales, es el mismo número **/
                 if(*baseOrigen == *baseDestino){
                     if(*mostrarPasos == 1)
-                        printf("[convertir] Las bases son iguales, por ende el número no se convierte.");
+                        printf("\nLas bases son iguales, por ende el número no se convierte.\n");
                 }
 
                 /** Hace una conversión de base 10 a base r **/
@@ -77,7 +78,9 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
                     }
                 }
 
-                /** Base origen r y base destino d diferentes a 10. Entonces, se utiliza como auxiliar la base 10 para hacer la conversión. **/
+                /** Base origen r y base destino d diferentes a 10.
+                    Entonces, se utiliza como auxiliar la base 10 para hacer la conversión.
+                **/
                 else {
 
                     /** Conversión de la parte entera **/
@@ -108,7 +111,8 @@ int* convertir(char *numero, int *baseOrigen, int* baseDestino, int *mostrarPaso
 
             /** -- Fin convertidores -- **/
         }
-    } else *retorno = 2;
+
+    } else *retorno = 2; // El número no es válido.
 
     /** Liberación de memoria **/
     free(parteEntera); free(parteFraccionaria); free(validador);
