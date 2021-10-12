@@ -8,7 +8,7 @@
 
 1633366455 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.h
 
-1633366945 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\constantes.h
+1633960784 c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\constantes.h
 
 1633619093 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convertidor.c
 	"convertidor.h"
@@ -74,7 +74,7 @@
 	"convertidor.h"
 	"constantes.h"
 
-1633619192 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convert.c
+1633619521 source:c:\users\berti\onedrive\proyectoorga\proyectoorga\converter\convert.c
 	<stdio.h>
 	<string.h>
 	<stdlib.h>
